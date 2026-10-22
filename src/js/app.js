@@ -7,10 +7,15 @@ import { obtenerTareas, guardarTareas } from './storage.js';
 // import confetti from 'canvas-confetti';
 // =============================================================================
 
+import { obtenerTareas, guardarTareas } from './storage.js';
+import confetti from 'canvas-confetti';
+
 // Referencias a los elementos del DOM
 const form = document.querySelector('#task-form');
 const input = document.querySelector('#txt');
 const listElement = document.querySelector('#task-list');
+const counterElement = document.querySelector('#task-counter');
+const filterButtons = document.querySelectorAll('.filter-btn');
 
 // TODO (Fase 3): Obtén referencias a la barra de herramientas, contador y botones de filtro
 // querySelector o querySelectorAll, '#task-counter' o '.filter-btn'
@@ -18,14 +23,27 @@ const listElement = document.querySelector('#task-list');
 // Estado de la aplicación
 let currentFilter = 'all'; // Valores posibles: 'all' | 'active' | 'completed'
 
+const EMPTY_MESSAGES = {
+  all: 'aunn no tienes tareas. agrega la primera!',
+  active: 'No tienes tareas pendientes',
+  completed: 'No hay tareas completadas aun',
+};
+
+
 /**
  * TODO (Fase 2): Disparar confeti con canvas-confetti
  * Implementa esta función para invocar la animación de confeti.
  * Consulta la documentación: https://www.npmjs.com/package/canvas-confetti
  */
 function dispararConfeti() {
-  console.log('¡Disparar confeti aquí!');
+  confetti({
+    particleCount: 120,
+    spread: 75,
+    origin: { y: 0.7 },
+    disableForReducedMotion: true,
+  });
 }
+
 
 /**
  * TODO (Fase 1 y 2): Alternar estado de completado
