@@ -16,9 +16,11 @@ export function obtenerTareas() {
   if (!data) return [];
   try {
     const list = JSON.parse(data);
-    // TODO: Mapea cada tarea garantizando la propiedad 'completed: boolean'
+    // Normaliza cada tarea: si venía de una versión anterior sin 'completed'
+    // (undefined), Boolean(undefined) === false, así que nunca queda sin definir.
     return list.map((task) => ({
       ...task,
+      completed: Boolean(task.completed),
     }));
   } catch (error) {
     console.error('Error al parsear tareas desde localStorage:', error);
