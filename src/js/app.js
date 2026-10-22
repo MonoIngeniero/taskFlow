@@ -1,13 +1,4 @@
 import { obtenerTareas, guardarTareas } from './storage.js';
-
-// =============================================================================
-// TODO (Fase 2): Importar canvas-confetti
-// Una vez instalado el paquete con npm y configurado el importmap en index.html,
-// importa la función de confeti aquí:
-// import confetti from 'canvas-confetti';
-// =============================================================================
-
-import { obtenerTareas, guardarTareas } from './storage.js';
 import confetti from 'canvas-confetti';
 
 // Referencias a los elementos del DOM
@@ -24,9 +15,9 @@ const filterButtons = document.querySelectorAll('.filter-btn');
 let currentFilter = 'all'; // Valores posibles: 'all' | 'active' | 'completed'
 
 const EMPTY_MESSAGES = {
-  all: 'aunn no tienes tareas. agrega la primera!',
-  active: 'No tienes tareas pendientes',
-  completed: 'No hay tareas completadas aun',
+  all: 'Aún no tienes tareas. ¡Agrega la primera!',
+  active: '¡Excelente! No tienes tareas pendientes',
+  completed: 'No hay tareas completadas aún',
 };
 
 
@@ -53,7 +44,7 @@ function dispararConfeti() {
  * 4. Si la tarea pasó a ser completada (true), llama a dispararConfeti().
  * 5. Guarda la lista actualizada con guardarTareas(list).
  * 6. Vuelve a ejecutar render() para refrescar la vista.
- * 
+ *
  * @param {number} id
  */
 function toggleTarea(id) {
@@ -80,7 +71,7 @@ function eliminarTarea(id) {
 
 /**
  * Renderiza la lista de tareas en el DOM.
- * 
+ *
  * TODO (Fase 1): Incluir un checkbox en cada elemento para marcar/desmarcar como completada.
  * TODO (Fase 3): Aplicar el filtro actual (currentFilter) antes de dibujar las tareas.
  * TODO (Fase 3): Actualizar el contador de tareas pendientes en el DOM.
@@ -100,11 +91,11 @@ export function render() {
   // Si currentFilter === 'completed', muestra solo las completadas.
   // Si currentFilter === 'all', muestra todas.
   // ---------------------------------------------------------------------------
-  const tasksToRender = allTasks; // Reemplaza esto con tu lógica de filtrado
-      if (currentFilter === 'active') return !t.completed;
-      if (currentFilter === 'completed') return t.completed;
-      return true;
-      });
+  const tasksToRender = allTasks.filter((t) => {
+    if (currentFilter === 'active') return !t.completed;
+    if (currentFilter === 'completed') return t.completed;
+    return true;
+  });
   // 3. Limpiar la lista actual en el DOM
   listElement.innerHTML = '';
 
