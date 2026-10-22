@@ -57,16 +57,25 @@ function dispararConfeti() {
  * @param {number} id
  */
 function toggleTarea(id) {
-  // Escribe aquí tu implementación
-}
+  const list = obtenerTareas();
+  const task = list.find((t) => t.id === id);
+  if (!task) return;
 
+  task.completed = !task.completed;
+
+  if (task.completed) dispararConfeti();
+
+  guardarTareas(list);
+  render();
+}
 /**
  * Elimina una tarea por su id y vuelve a renderizar.
  * @param {number} id
  */
 function eliminarTarea(id) {
-  //TODO agrega funcionalidad de eliminar tarea sin modificar el storage.js
-
+   const list = obtenerTareas().filter((t) => t.id !== id);
+    guardarTareas(list);
+    render();
 }
 
 /**
