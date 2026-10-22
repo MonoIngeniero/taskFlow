@@ -92,7 +92,8 @@ export function render() {
   // 1. TODO (Fase 3): Actualizar contador de tareas pendientes
   // Calcula cuántas tareas tienen completed === false y actualiza el texto del contador.
   // ---------------------------------------------------------------------------
-
+  const pending = allTasks.filter((t) => !t.completed).length;
+  counterElement.textContent = `${pending} ${pending === 1 ? 'pendiente' : 'pendientes'}`;
   // ---------------------------------------------------------------------------
   // 2. TODO (Fase 3): Filtrar las tareas según currentFilter
   // Si currentFilter === 'active', muestra solo las tareas no completadas.
@@ -100,7 +101,10 @@ export function render() {
   // Si currentFilter === 'all', muestra todas.
   // ---------------------------------------------------------------------------
   const tasksToRender = allTasks; // Reemplaza esto con tu lógica de filtrado
-
+      if (currentFilter === 'active') return !t.completed;
+      if (currentFilter === 'completed') return t.completed;
+      return true;
+      });
   // 3. Limpiar la lista actual en el DOM
   listElement.innerHTML = '';
 
@@ -108,16 +112,15 @@ export function render() {
   if (tasksToRender.length === 0) {
     const emptyLi = document.createElement('li');
     emptyLi.className = 'empty-state';
-    emptyLi.textContent = 'No hay tareas para mostrar.';
+    emptyLi.textContent = EMPTY_MESSAGES[currentFilter];
     listElement.appendChild(emptyLi);
     return;
   }
-
   // 5. Renderizado de cada elemento
   tasksToRender.forEach((task) => {
     const li = document.createElement('li');
     // TODO (Fase 1): Agrega la clase 'completed' al elemento si task.completed es true
-    li.className = 'task-item';
+    li.className = task.completed ? 'task-item completed' : 'task-item';
 
     const leftDiv = document.createElement('div');
     leftDiv.className = 'task-left';
@@ -126,12 +129,19 @@ export function render() {
     // - asígnale checked = task.completed
     // - agrega un event listener 'change' que invoque toggleTarea(task.id)
 
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'task-checkbox';
+    checkbox.checked = task.completed;
+    checkbox.setAttribute('aria-label', `Marcar "${task.txt}" como completada`);
+    checkbox.addEventListener('change', () => toggleTarea(task.id));
+
     const span = document.createElement('span');
     span.className = 'task-text';
     span.textContent = task.txt;
 
     // Agrega el checkbox y el span al contenedor izquierdo:
-
+    leftDiv.appendChild(checkbox);
     leftDiv.appendChild(span);
 
     const deleteBtn = document.createElement('button');
@@ -139,6 +149,8 @@ export function render() {
     deleteBtn.textContent = 'Eliminar';
     deleteBtn.type = 'button';
     // Agrega acción de borrado usando eliminarTarea(task.id);
+    deleteBtn.setAttribute('aria-label', `Eliminar "${task.txt}"`);
+    deleteBtn.addEventListener('click', () => eliminarTarea(task.id));
 
 
     li.appendChild(leftDiv);
@@ -154,6 +166,19 @@ export function render() {
 // 2. Actualizar currentFilter con el valor del filtro ('all', 'active', 'completed').
 // 3. Llamar a render().
 // =============================================================================
+
+// Listeners de los botones de filtro
+filterButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    filterButtons.forEach((b) => {
+      const isActive = b === btn;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
 
 // Listener para el envío del formulario
 form.addEventListener('submit', (e) => {
